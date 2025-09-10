@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { signInWithGoogle, watchAuth, logout } from "./lib/auth";
+import MapPage from "./components/MapPage";
 
-function App() {
+export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const un = watchAuth(setUser);
+    return () => un();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <div>
+      <header style={{ display: "flex", gap: 12, padding: 12, alignItems: "center" }}>
+        <h3 style={{ margin: 0, flex: 1 }}>Maps + Firebase Demo</h3>
+        {user ? (
+          <>
+            <span>{user.displayName || user.email}</span>
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <button onClick={signInWithGoogle}>Sign in with Google</button>
+        )}
       </header>
+      <MapPage />
     </div>
   );
 }
-
-export default App;
