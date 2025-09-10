@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-// import { auth } from "../lib/firebase";
+import { auth } from "../lib/firebase";
 
 function loadMaps(key) {
   return new Promise((resolve) => {
@@ -41,35 +41,49 @@ export default function MapPage() {
     run();
   }, []);
 
-//   async function fetchNearby() {
-//     const user = auth.currentUser;
-//     if (!user) return alert("请先登录");
-//     const idToken = await user.getIdToken();
-//     const url = `http://localhost:4000/api/places/nearby?lat=37.7749&lng=-122.4194&type=restaurant`;
-//     const res = await fetch(url, { headers: { Authorization: `Bearer ${idToken}` } });
-//     const data = await res.json();
-//     if (Array.isArray(data.results)) {
-//       data.results.slice(0, 10).forEach((p) => {
-//         if (p.geometry && p.geometry.location) {
-//           new window.google.maps.Marker({
-//             position: {
-//               lat: p.geometry.location.lat,
-//               lng: p.geometry.location.lng,
-//             },
-//             map: mapObj.current,
-//             title: p.name,
-//           });
-//         }
-//       });
-//     } else {
-//       alert("后端返回异常");
-//     }
-//   }
+  async function fetchNearby() {
+  const user = auth.currentUser;
+  if (!user) return alert("请先登录");
+  const idToken = await user.getIdToken();
+
+  // 使用当前地图中心作为用户选点
+  const center = mapObj.current.getCenter();
+  const lat = center.lat();
+  const lng = center.lng();
+
+  const url = `http://localhost:4000/api/places/nearby?lat=${lat}&lng=${lng}&type=restaurant`;
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${idToken}` } });
+  const data = await res.json();
+
+  if (Array.isArray(data.results)) {
+    // 清理之前的 marker，避免越点越多
+    if (!window.__markers) window.__markers = [];
+    window.__markers.forEach(m => m.setMap(null));
+    window.__markers = [];
+
+    data.results.slice(0, 10).forEach((p) => {
+      if (p.geometry && p.geometry.location) {
+        const marker = new window.google.maps.Marker({
+          position: {
+            lat: p.geometry.location.lat,
+            lng: p.geometry.location.lng,
+          },
+          map: mapObj.current,
+          title: p.name,
+        });
+        window.__markers.push(marker);
+      }
+    });
+  } else {
+    alert("后端返回异常");
+  }
+}
+
 
   return (
     <div style={{ padding: 16 }}>
-      {/* <input ref={inputRef} placeholder="Search places…" style={{ width: 320, marginBottom: 8 }} /> */}
-      {/* <button onClick={fetchNearby}>附近餐馆（后端代理）</button> */}
+      <input ref={inputRef} placeholder="Search places…" style={{ width: 320, marginBottom: 8 }} />
+      <button onClick={fetchNearby}>附近餐馆（后端代理）</button>
       <div ref={mapRef} style={{ width: "100%", height: 800, marginTop: 8 }} />
     </div>
   );
