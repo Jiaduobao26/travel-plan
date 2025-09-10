@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { signInWithGoogle, watchAuth, logout } from "./lib/auth";
 import MapPage from "./components/MapPage";
+import UserProfile from "./components/UserProfile";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -16,7 +17,7 @@ export default function App() {
         <h3 style={{ margin: 0, flex: 1 }}>Maps + Firebase Demo</h3>
         {user ? (
           <>
-            <span>{user.displayName || user.email}</span>
+            <UserProfile uid={user.uid} />
             <button onClick={logout}>Logout</button>
           </>
         ) : (
