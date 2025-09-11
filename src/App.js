@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { signInWithGoogle, watchAuth, logout } from "./lib/auth";
 import MapPage from "./components/MapPage";
 import UserProfile from "./components/UserProfile";
+import { Button } from '@mui/material';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -21,10 +22,10 @@ export default function App() {
         {user ? (
           <>
             <UserProfile uid={user.uid} />
-            <button onClick={logout}>Logout</button>
+            <Button onClick={logout}>Logout</Button>
           </>
         ) : (
-          <button onClick={signInWithGoogle}>Sign in with Google</button>
+          <Button onClick={signInWithGoogle}>Sign in with Google</Button>
         )}
       </header>
       <MapPage />
