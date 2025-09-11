@@ -6,7 +6,10 @@ import UserProfile from "./components/UserProfile";
 export default function App() {
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  // 初次渲染时：组件完成挂载，DOM 已经插入页面后，useEffect 回调才会被执行
+  // 依赖数组 []：表示只在挂载时执行一次，不会在之后 re-render 时再次执行
+  // 返回的清理函数 return () => un()：会在组件卸载（unmount）时执行，用来清理订阅、事件监听等副作用
+  useEffect(() => { // 只执行一次初始化逻辑 （挂载后）
     const un = watchAuth(setUser);
     return () => un();
   }, []);

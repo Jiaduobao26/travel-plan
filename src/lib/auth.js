@@ -10,7 +10,13 @@ export async function signInWithGoogle() {
 }
 
 export function watchAuth(cb) {
-  return onAuthStateChanged(auth, cb);
+  /**
+   * 
+   * @param auth — The Auth instance.
+   * @param cb — callback triggered on change
+   * @returns 
+   */
+  return onAuthStateChanged(auth, cb); // Unsubscribe
 }
 
 export function logout() {
