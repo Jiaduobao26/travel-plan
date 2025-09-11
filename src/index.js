@@ -3,10 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline'; // 用于重置浏览器默认样式
+import theme from './theme'; // 导入创建的主题
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
+   <ThemeProvider theme={theme}>
+      <CssBaseline /> {/* 应用 CSS 重置 */}
+      <App />
+    </ThemeProvider>
 );
 
 
