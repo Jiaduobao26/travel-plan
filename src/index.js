@@ -5,7 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline'; // 用于重置浏览器默认样式
-import theme from './theme'; // 导入创建的主题
+// import theme from './theme/theme3'; // 导入创建的主题
+
+import theme from './theme/theme5'; // 导入创建的主题
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
