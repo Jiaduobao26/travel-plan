@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { auth } from "../lib/firebase";
-import { Button, Input } from '@mui/material';
+import SmallButton from "./common/SmallButton";
 import PlacesAutocomplete from "./PlacesAutocomplete";
+import MyDialog from "./Preference";
 import { zoomMapToPlace } from '../utils/predictionLevel';
-// import { styled } from '@mui/material/styles';
 import attractionIcon from "../assets/round-pushpin.png";
 function loadMaps(key) {
   return new Promise((resolve) => {
@@ -21,10 +21,11 @@ export default function MapPage() {
   const inputRef = useRef(null);
   const mapObj = useRef(null);
 
-  const [picked, setPicked] = useState(""); // 选中点的文本，用于 query
+  const [picked, setPicked] = useState("San Mat"); // 选中点的文本，用于 query
   const pickedLocRef = useRef(null); // 选中点坐标
   const infoRef = useRef(null); // 复用一个 InfoWindow
   const [showAutoComplete, setShowAutoComplete] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const handlePick = (placePrediction) => {
     console.log("用户选择了：", placePrediction);
     const place = placePrediction;
@@ -39,7 +40,16 @@ export default function MapPage() {
       window.__markers.push(mk);
     }
     zoomMapToPlace(mapObj.current, place);
+    handleOpenDialog(true);
   };
+  const handleOpenDialog = () => setOpenDialog(true);
+  const handleCloseDialog = () => setOpenDialog(false);
+  const handleConfirmDialog = () => {
+    // 处理确认逻辑
+    console.log('确认操作');
+    setOpenDialog(false);
+  };
+
 
   useEffect(() => {
     (async () => {
@@ -48,6 +58,7 @@ export default function MapPage() {
       mapObj.current = new window.google.maps.Map(mapRef.current, {
         center: { lat: 37.7749, lng: -122.4194 },
         zoom: 12,
+        clickableIcons: false,
       });
       infoRef.current = new window.google.maps.InfoWindow();
       if (!showAutoComplete) {
@@ -165,26 +176,35 @@ export default function MapPage() {
       },
     });
     marker.addListener("click", () => {
+      console.log("点击了 marker", p);
       // 打开统一的 InfoWindow
       infoRef.current.setContent(infoHtml(p));
       infoRef.current.open({ anchor: marker, map: mapObj.current });
     });
     return marker;
   }
-
-
-
   return (
     <div style={{ padding: 16 }}>
-      {showAutoComplete && <PlacesAutocomplete onSelect={handlePick} />}
-      {picked && (
-        <div style={{ margin: "6px 0", fontSize: 14 }}>
-          You want to go: <strong>{picked}</strong>
-        </div>
-      )}
-      <Button variant="outlined" onClick={fetchNearby}>附近餐馆（后端代理）</Button>
-      <Button variant="contained" onClick={searchAttractionsText}>Search nearby 20 attractions</Button>
-      <div ref={mapRef} style={{ width: "100%", height: 650, marginTop: 8 }} />
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+        {showAutoComplete && <PlacesAutocomplete onSelect={handlePick} />}
+        {picked && (
+          <>
+            <MyDialog
+              open={openDialog}
+              onClose={handleCloseDialog}
+              title="Trip to San Mateo"
+              onConfirm={handleConfirmDialog}
+            >
+            </MyDialog>
+          </>
+        )}
+      </div>
+      <div style={{ display: "flex" }}>
+        <SmallButton variant="outlined" size="small" style={{ marginRight: 4 }} onClick={handleOpenDialog}>Start planning</SmallButton>
+        <SmallButton variant="outlined" size="small" style={{ marginRight: 4 }} onClick={fetchNearby}>附近餐馆（后端代理）</SmallButton>
+        <SmallButton variant="contained" size="small" style={{ marginRight: 4 }} onClick={searchAttractionsText}>Search nearby 20 attractions</SmallButton>
+      </div>
+      <div ref={mapRef} style={{ width: "100%", height: 620, marginTop: 8 }} />
     </div>
   );
 }
