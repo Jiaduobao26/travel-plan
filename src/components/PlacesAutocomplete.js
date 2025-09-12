@@ -27,9 +27,22 @@ export default function PlacesAutocomplete({
     onSelect,
     placeholder = "Where to?",
     fields = ["geometry", "name", "place_id", "formatted_address", "editorial_summary", "types", "address_components"],
-    types = ["(regions)"], // e.g. ["(cities)"] | ["geocode"] | ["establishment"]
-    componentRestrictions = { country: ["us", "ca", 'cn', 'jp'] }, // e.g. { country: "us" }
-    locationBias, // e.g. { radius: 50000, center: { lat: 37.7749, lng: -122.4194 } }
+    // 效果不好，不用
+    // types = ["(regions)"], // e.g. ["(cities)"] | ["geocode"] | ["establishment"]
+    // componentRestrictions = { country: ["us", "ca", 'cn', 'jp'] }, // e.g. { country: "us" }
+    // locationBias, // e.g. { radius: 50000, center: { lat: 37.7749, lng: -122.4194 } }
+    // 新：主类型白/黑名单（严格过滤）
+    includedPrimaryTypes = ["locality", "administrative_area_level_1", "country"],
+    excludedPrimaryTypes = [
+        "administrative_area_level_2",  // District/County
+        "administrative_area_level_3",
+        "postal_code"
+    ],
+    // 新：区域限制（大写国家码）
+    includedRegionCodes = ["US", "CA", "CN", "JP"],
+    // 仍可用地理偏置/限制
+    locationBias,               // { radius, center }
+    locationRestriction,        // { north, south, east, west } 更严格
     minLength = 2,
     debounceMs = 250,
     size = "small",
@@ -67,16 +80,16 @@ export default function PlacesAutocomplete({
             setOptions([]);
             return;
         }
-        serviceRef.current.getPlacePredictions(
-            {
-                input: text,
-                sessionToken: sessionTokenRef.current,
-                types,
-                componentRestrictions,
-                locationBias,
-            },
-            (preds) => setOptions(preds || [])
-        );
+        const req = {
+            input: text,
+            sessionToken: sessionTokenRef.current,
+            includedPrimaryTypes,
+            excludedPrimaryTypes,
+            includedRegionCodes,   // 必须是大写两位码
+        };
+        if (locationBias) req.locationBias = locationBias;
+        if (locationRestriction) req.locationRestriction = locationRestriction;
+        serviceRef.current.getPlacePredictions(req, (preds) => setOptions(preds || []));
     }, debounceMs);
 
     useEffect(() => {
@@ -109,7 +122,12 @@ export default function PlacesAutocomplete({
             disabled={!ready}
             freeSolo
             options={options}
-            filterOptions={(x) => x} // 不让 MUI 再过滤
+            filterOptions={(p) => {
+                return p.filter((x) => (x.types.includes("country") ||
+                    x.types.includes("administrative_area_level_1") ||
+                    x.types.includes("administrative_area_level_2") ||
+                    x.types.includes("locality") || x.types.includes("postal_town")));
+            }}
             getOptionLabel={(o) => (typeof o === "string" ? o : o.description)}
             onInputChange={(_, v) => setInput(v)}
             onChange={async (_, val) => {
