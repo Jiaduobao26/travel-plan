@@ -30,15 +30,13 @@ export default function UserProfile({ uid }) {
         <img
           src={profile.avatar}
           alt="avatar"
-          width={46}
-          height={46}
+          width={32}
+          height={32}
           style={{ borderRadius: "50%" }}
         />
       ) : null}
       <span>
         {profile.name || profile.email || uid}
-        {/* {profile.role ? ` · ${profile.role}` : ""} */}
-        {/* {profile.plan ? ` · ${profile.plan}` : ""} */}
       </span>
     </div>
   );
