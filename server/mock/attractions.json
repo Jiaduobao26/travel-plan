@@ -1,0 +1,129 @@
+{
+    "destination": "San Francisco",
+    "duration": 8,
+    "attractionCount": 30,
+    "requestedCount": 28,
+    "attractions": [
+        {
+            "name": "Golden Gate Bridge",
+            "category": "Historical Site"
+        },
+        {
+            "name": "Alcatraz Island",
+            "category": "Historical Site"
+        },
+        {
+            "name": "Fisherman's Wharf",
+            "category": "Neighborhood"
+        },
+        {
+            "name": "Chinatown",
+            "category": "Neighborhood"
+        },
+        {
+            "name": "Lombard Street",
+            "category": "Viewpoint"
+        },
+        {
+            "name": "Palace of Fine Arts",
+            "category": "Architecture"
+        },
+        {
+            "name": "Exploratorium",
+            "category": "Museum"
+        },
+        {
+            "name": "California Academy of Sciences",
+            "category": "Museum"
+        },
+        {
+            "name": "Muir Woods National Monument",
+            "category": "Natural Landmark"
+        },
+        {
+            "name": "Dolores Park",
+            "category": "Park"
+        },
+        {
+            "name": "Union Square",
+            "category": "Shopping"
+        },
+        {
+            "name": "Painted Ladies",
+            "category": "Architecture"
+        },
+        {
+            "name": "The Exploratorium's After Dark",
+            "category": "Entertainment"
+        },
+        {
+            "name": "Sausalito Ferry",
+            "category": "Transportation Hub"
+        },
+        {
+            "name": "Golden Gate Park",
+            "category": "Park"
+        },
+        {
+            "name": "The Walt Disney Family Museum",
+            "category": "Museum"
+        },
+        {
+            "name": "AT&T Park Tour",
+            "category": "Sports Venue"
+        },
+        {
+            "name": "Coit Tower",
+            "category": "Viewpoint"
+        },
+        {
+            "name": "Ghirardelli Square",
+            "category": "Food & Dining"
+        },
+        {
+            "name": "San Francisco Museum of Modern Art (SFMOMA)",
+            "category": "Art Gallery"
+        },
+        {
+            "name": "Aquarium of the Bay",
+            "category": "Museum"
+        },
+        {
+            "name": "The Mission District Murals",
+            "category": "Cultural Site"
+        },
+        {
+            "name": "The Castro Theatre",
+            "category": "Entertainment"
+        },
+        {
+            "name": "Crissy Field",
+            "category": "Outdoor Activity"
+        },
+        {
+            "name": "Mission Dolores Park",
+            "category": "Park"
+        },
+        {
+            "name": "San Francisco Cable Car Museum",
+            "category": "Museum"
+        },
+        {
+            "name": "Ocean Beach",
+            "category": "Beach"
+        },
+        {
+            "name": "Fort Point National Historic Site",
+            "category": "Historical Site"
+        },
+        {
+            "name": "Yerba Buena Gardens",
+            "category": "Park"
+        },
+        {
+            "name": "Twin Peaks",
+            "category": "Viewpoint"
+        }
+    ],
+    "generatedAt": "2025-09-12T18:47:12.384Z"
+}
