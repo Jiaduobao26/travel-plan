@@ -1,5 +1,4 @@
 
-import React from 'react';
 import { Box, Typography } from '@mui/material';
 function Title({ src, title, description }) {
     return (
@@ -16,9 +15,9 @@ function Title({ src, title, description }) {
                 </Typography>
             </Box>
 
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            {description && <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 {description}
-            </Typography>
+            </Typography>}
         </>
     );
 }
