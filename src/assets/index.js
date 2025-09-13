@@ -4,3 +4,4 @@ export { default as travelIcon } from './travel.png';
 export { default as calendarIcon } from './wall-calendar.png';
 export { default as preferenceIcon } from './feedback.png';
 export { default as dishIcon } from './dish.png';
+export { default as attractionIcon } from './round-pushpin.png'; 
