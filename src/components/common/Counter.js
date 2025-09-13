@@ -1,5 +1,3 @@
-// Counter.jsx
-import React from "react";
 import { Stack, IconButton, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -25,12 +23,12 @@ export default function Counter({
         onClick={handleDec}
         disabled={value <= min}
         size={size}
-        sx={{ border: 1, borderColor: "divider" }}
+        sx={{ border: 1, borderColor: "divider", width: 26, height: 26 }}
       >
-        <RemoveIcon />
+        <RemoveIcon sx={{ fontSize: 20 }} color={value <= min ? '' : 'primary'}  />
       </IconButton>
 
-      <Typography variant="h6" sx={{ width: 24, textAlign: "center" }}>
+      <Typography variant="body1" sx={{ width: 24, textAlign: "center", userSelect: 'none'}}>
         {value}
       </Typography>
 
@@ -38,9 +36,9 @@ export default function Counter({
         onClick={handleInc}
         disabled={value >= max}
         size={size}
-        sx={{ border: 1, borderColor: "divider" }}
+        sx={{ border: 1, borderColor: "divider", width: 26, height: 26 }}
       >
-        <AddIcon />
+        <AddIcon sx={{ fontSize: 20 }} color={ value >= max ? '' :'primary'}  />
       </IconButton>
     </Stack>
   );
