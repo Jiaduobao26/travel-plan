@@ -1,35 +1,10 @@
 // 预算选项配置数据
 export const budgetOptions = [
-    {
-        id: 1,
-        value: 'Any budget',
-        label: 'Any budget',
-        icon: '' // 无图标
-    },
-    {
-        id: 2,
-        value: 'On a budget',
-        label: 'On a budget',
-        icon: '💰'
-    },
-    {
-        id: 3,
-        value: 'Sensibly priced',
-        label: 'Sensibly priced',
-        icon: '💰💰'
-    },
-    {
-        id: 4,
-        value: 'Upscale',
-        label: 'Upscale',
-        icon: '💰💰💰'
-    },
-    {
-        id: 5,
-        value: 'Luxury',
-        label: 'Luxury',
-        icon: '💰💰💰💰'
-    }
+    { id: 1, value: 'Any', label: 'Flexible budget', icon: '' },
+    { id: 2, value: 'Budget', label: 'Budget-friendly', icon: '💰' },
+    { id: 3, value: 'Moderate', label: 'Moderate pricing', icon: '💰💰' },
+    { id: 4, value: 'Upscale', label: 'Upscale / Premium', icon: '💰💰💰' },
+    { id: 5, value: 'Luxury', label: 'Luxury experience', icon: '💰💰💰💰' }
 ];
 // 旅行风格选项
 export const travelStyles = [
