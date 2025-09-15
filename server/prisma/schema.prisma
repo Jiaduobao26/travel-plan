@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+  // output   = "./docs/ERD.svg"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  uid           String   @id // Firebase uid，主键
+  email         String?  @unique // 邮箱，唯一 + 索引
+  emailVerified Boolean  @default(false) // 是否验证过邮箱
+  name          String?
+  avatar        String?
+  provider      String?
+  createdAt     DateTime @default(now()) // 注册时间
+  lastLoginAt   DateTime @default(now()) // 最近登录时间
+  role          String   @default("user") // 权限：user/admin...
+  plan          String   @default("free") // 套餐：free/premium...
+
+  // 关联
+  trips Trip[]
+}
+
+model Trip {
+  id   String @id @default(uuid()) // Trip 主键，UUID 自动生成
+  uid  String // 关联的 Firebase 用户 UID
+  user User   @relation(fields: [uid], references: [uid], onDelete: Cascade)
+
+  destination String // 目的地名称（展示用，比如 "San Francisco"）
+  place_id    String // Google Maps place_id
+  startDate   DateTime? // 出发日期，可选（支持草稿/flexible dates）
+  endDate     DateTime? // 结束日期，可选
+  duration    Int // 行程天数
+  budget      BudgetLevel?
+  preferences Json? // 用户偏好（旅行风格、饮食限制等），存 JSON
+  // 出行人拆字段，便于统计和查询
+  adults      Int          @default(1) // 成人数
+  children    Int          @default(0) // 儿童数
+  infants     Int          @default(0) // 婴儿数
+  pets        Int          @default(0) // 宠物数
+  setupHash   String? // 规范化 setup 的哈希（复现/缓存命中用），可选
+  createdAt   DateTime     @default(now()) // 创建时间
+  updatedAt   DateTime     @updatedAt // 更新时间（自动维护）
+
+  // 关联关系
+  recommendation   TripRecommendation? // 推荐的景点快照（place_id 列表）
+  // 选择集合（按顺序存 place_id）
+  selectedPlaceIds String[]            @default([]) // -> Attraction.place_id[]
+  pendingPlaceIds  String[]            @default([]) // -> Attraction.place_id[]
+  manualPlaceIds   String[]            @default([]) // -> Attraction.place_id[]
+  plan             TripPlan? // MVP：一个 Trip 只有一份 plan（覆盖写）
+
+  @@index([uid]) // 按用户查询
+  @@index([destination]) // 按目的地查询
+}
+
+// 预算枚举：前端传 1..5，后端映射为下列枚举，1(Any) -> 存 null
+enum BudgetLevel {
+  FREE // 节省预算（前端 id=2）
+  ECONOMY // 合理价格（前端 id=3）
+  UPSCALE // 高端（前端 id=4）
+  LUXURY // 奢华（前端 id=5）
+}
+
+model TripRecommendation {
+  id     String @id @default(uuid())
+  tripId String @unique // 1:1 绑定到 Trip
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade) // <- 关键：级联删除
+
+  algoVersion String // 推荐算法版本
+  placeIds    String[] // 推荐景点的 place_id 有序数组
+  scores      Json? // 可选，存打分细节/调试信息
+  createdAt   DateTime @default(now())
+}
+
+model TripPlan {
+  id        String   @id @default(uuid())
+  tripId    String   @unique
+  planJson  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // 删除 Trip 时，自动级联删除 TripPlan
+  trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+}
+
+// 价格水平（与 Google Places 的含义对齐）
+enum PriceLevel {
+  FREE // 免费
+  INEXPENSIVE // 便宜
+  MODERATE // 中等
+  EXPENSIVE // 昂贵
+  VERY_EXPENSIVE // 非常昂贵
+}
+
+model Attraction {
+  // 主键 & 基础信息
+  place_id String  @id
+  name     String
+  category String?
+  address  String?
+  lat      Float?
+  lng      Float?
+
+  // 评分 & 费用
+  rating           Float?
+  userRatingsTotal Int?
+  priceLevel       PriceLevel?
+
+  // 类型与资源
+  types   Json? // Google Places 的 types 原样存
+  website String?
+
+  // 营业时间（两种：结构化 periods 与人类可读描述）
+  openingHours        Json? // 可以存当前 open_now 等简要信息
+  regularOpeningHours Json? // periods: 一周各天营业时段（建议直接存 places 返回的 periods）
+  weekdayDescriptions String[] @default([]) // 一周 7 天的本地化营业描述字符串
+
+  // 图片
+  photos Json?
+
+  // 联系方式
+  internationalPhoneNumber String?
+
+  // 适配/服务能力
+  allowsDogs         Boolean?
+  hasMenuForChildren Boolean?
+  isGoodForGroups    Boolean?
+
+  // 餐食供应
+  servesBreakfast      Boolean?
+  servesLunch          Boolean?
+  servesDinner         Boolean?
+  servesDessert        Boolean?
+  servesVegetarianFood Boolean?
+
+  // 充电设施（结构因供应商差异较大，建议 Json 持久化）
+  evChargeOptions Json?
+
+  // 审计字段
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
