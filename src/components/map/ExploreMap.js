@@ -71,7 +71,7 @@ export default function ExploreMap() {
     if (!isLoaded) return <div style={{ padding: 16 }}>Loading map…</div>;
 
     return (
-        <div style={{ padding: 16 }}>
+        <div style={{ padding: 0 }}>
             <MapControls
                 picked={picked}
                 onPick={handlePick}
