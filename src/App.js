@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { watchAuth } from "./lib/auth";
 import ExploreMap from "./components/map/ExploreMap";
 import Header from './components/Header';
+// import Toolbar from '@mui/material/Toolbar';
+import { Box } from "@mui/material";
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -14,9 +16,10 @@ export default function App() {
   }, []);
 
   return (
-    <div>
+    <Box sx={{ height: "100vh", overflow: "hidden", display: "flex", alignItems: "end" }}>
       <Header user={user} />
-      <ExploreMap />
-    </div>
+      {/* <Toolbar /> */}
+      <ExploreMap sx={{height: 'calc(100vh - 64px)', overflow: "hidden" }}/>
+    </Box>
   );
 }
