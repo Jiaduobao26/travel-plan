@@ -1,5 +1,5 @@
 import { GoogleMap } from "@react-google-maps/api";
-const STYLE = { width: "100%", height: 620 };
+const STYLE = { width: "100%", height: "calc(100vh - 64px - 140px)" };
 const DEFAULT_CENTER = { lat: 37.7749, lng: -122.4194 };
 
 export default function MapCanvas({ onLoad, children }) {
