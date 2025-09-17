@@ -116,9 +116,9 @@ const blackButtonTheme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: '#FFFFFF', // AppBar背景为白色
+          // backgroundColor: '#FFFFFF', // AppBar背景为白色
           color: '#333333', // AppBar文本为深灰色
-          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.05)',
+          boxShadow: 'none',
         },
       },
     },
