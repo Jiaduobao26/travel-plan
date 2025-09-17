@@ -4,15 +4,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
-import UserProfile from "./UserProfile"; 
+import UserProfile from "./UserProfile";
 import { signInWithGoogle, logout } from "../lib/auth";
 
 export default function Header({ user }) {
   return (
-    <AppBar position="static" color="default" elevation={1}>
-      <Toolbar sx={{ gap: 2 }}>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Maps + Firebase Demo
+    <AppBar position="fixed" color="transparent" elevation={0}>
+      <Toolbar>
+        <Typography variant="h3" sx={{ flexGrow: 1, fontWeight: 700 }}>
+          TravelPlan
         </Typography>
         {user ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -21,7 +21,7 @@ export default function Header({ user }) {
           </Box>
         ) : (
           <Button color="inherit" onClick={signInWithGoogle}>
-            Sign in with Google
+            Sign in
           </Button>
         )}
       </Toolbar>
