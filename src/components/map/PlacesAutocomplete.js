@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Chip, TextField, Autocomplete } from "@mui/material";
-import { levelFromPrediction, levelLabel } from "../utils/predictionLevel";
+import { levelFromPrediction, levelLabel } from "../../utils/predictionLevel";
 
 /** 轻量防抖 */
 function useDebounced(fn, delay = 250) {
@@ -14,6 +14,7 @@ function useDebounced(fn, delay = 250) {
 }
 
 /**
+ *  地点自动补全（Google Places）
  * Props:
  * - onSelect(placeDetail)  // 选中后返回包含 geometry.location 的详情
  * - placeholder
@@ -48,6 +49,7 @@ export default function PlacesAutocomplete({
     size = "small",
     variant = "outlined",
     sx,
+    mapRef,
 }) {
     const [input, setInput] = useState("");
     const [options, setOptions] = useState([]);
@@ -57,22 +59,27 @@ export default function PlacesAutocomplete({
     const placesServiceRef = useRef(null);      // PlacesService
     const sessionTokenRef = useRef(null);       // Session token for billing/quality
 
-    // 初始化 Google 服务
-    useEffect(() => {
-        const g = window.google;
-        console.log("Google Maps JS API 加载完毕", g);
-        if (!g?.maps?.places) return;
+ // 初始化 Google 服务
+  useEffect(() => {
+    const g = window.google;
+    if (!g?.maps?.places) return;
 
-        // 预测服务
-        serviceRef.current = new g.maps.places.AutocompleteService();
-        // 详情服务需要传一个 map 或 div，这里创建个离屏 div 即可
-        const offscreen = document.createElement("div");
-        placesServiceRef.current = new g.maps.places.PlacesService(offscreen);
+    // 预测服务
+    serviceRef.current = new g.maps.places.AutocompleteService();
 
-        // 每次新一轮输入用新 token；选中后也换一枚
-        sessionTokenRef.current = new g.maps.places.AutocompleteSessionToken();
-        setReady(true);
-    }, []);
+    // 详情服务需要传一个 map 或 div：
+    // - 优先用 mapRef.current（更贴合地图上下文）
+    // - 否则创建离屏 div
+    const host =
+      mapRef?.current?.getDiv?.() ??
+      mapRef?.current ??
+      document.createElement("div");
+    placesServiceRef.current = new g.maps.places.PlacesService(host);
+
+    // 每次新一轮输入用新 token；选中后也换一枚
+    sessionTokenRef.current = new g.maps.places.AutocompleteSessionToken();
+    setReady(true);
+  }, [mapRef]);
 
     // 拉预测（防抖）
     const requestPredictions = useDebounced((text) => {
